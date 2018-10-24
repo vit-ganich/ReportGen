@@ -1,18 +1,17 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Excel = Microsoft.Office.Interop.Excel;
-
 
 namespace GetResultsCI
 {
-    class Program
+    class Helper
     {
-        static void Main(string[] args)
+        public static void Timer()
         {
-            Parser.Parse();
+            var sec = 0;
         }
     }
 }
