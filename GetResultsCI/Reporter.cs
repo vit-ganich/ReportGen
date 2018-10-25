@@ -4,7 +4,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace GetResultsCI
 {
-    class Logger
+    class Reporter
     {
         public static string ReportName { get; set; }
           
@@ -35,7 +35,7 @@ namespace GetResultsCI
                 if (!Directory.Exists(reportFolder))
                 {
                     var myDir = Directory.CreateDirectory(reportFolder);
-                    Console.WriteLine(String.Format("\nLog file folder: {0} was succesfully created...\n", reportFolder));
+                    Console.WriteLine(string.Format("\nLog file folder: {0} was succesfully created...\n", reportFolder));
                 }
             }
             catch (Exception)

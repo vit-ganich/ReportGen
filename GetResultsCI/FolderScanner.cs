@@ -15,7 +15,7 @@ namespace GetResultsCI
             try
             {
                 var resultsCIfolder = ConfigReader.GetTestResultsDir();
-                var extension = String.Format($"*.{ConfigReader.GetFilesExtension()}");
+                var extension = string.Format($"*.{ConfigReader.GetFilesExtension()}");
 
                 Console.WriteLine("Scanning the folder... Please, wait...");
                 filesInFolder.AddRange(Directory.GetFiles(

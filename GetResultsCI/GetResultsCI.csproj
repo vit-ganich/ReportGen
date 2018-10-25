@@ -51,9 +51,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigReader.cs" />
+    <Compile Include="FileReader.cs" />
     <Compile Include="FolderScanner.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Reporter.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
