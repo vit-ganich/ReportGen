@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
-using Excel = Microsoft.Office.Interop.Excel;
 
 namespace GetResultsCI
 {
-    class Reporter
+    class ReportWriter
     {
         public static string ReportName { get; set; }
           
@@ -16,8 +15,8 @@ namespace GetResultsCI
 
             if (reportFolder != null)
             {
-                using (System.IO.StreamWriter file =
-                new System.IO.StreamWriter(Path.Combine(reportFolder, reportFile), true))
+                using (StreamWriter file =
+                new StreamWriter(Path.Combine(reportFolder, reportFile), true))
                 {
                     file.Write(message);
                 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GetResultsCI
 {
-    class FileReader
+    class TRXreader
     {
         /// <summary>
         /// Method reads the file and returns the string with errors
@@ -62,7 +62,8 @@ namespace GetResultsCI
         /// <returns>String full path</returns>
         public static string JoinAbsFilePAth(string[] splittedFileName)
         {
-            return Path.Combine(splittedFileName);
+            return string.Join("\\", splittedFileName);
+            //return Path.Combine(splittedFileName);
         }
 
         /// <summary>
@@ -75,7 +76,17 @@ namespace GetResultsCI
             string TRXfileContent = "Error while reading the TRX-file";
             try
             {
-                TRXfileContent = File.ReadAllText("\\\\" + JoinAbsFilePAth(splittedFileName));
+                string pathToFIle;
+                if (!splittedFileName[0].Contains(":"))
+                {
+                    pathToFIle = "\\\\" + JoinAbsFilePAth(splittedFileName);
+                }
+                else
+                {
+                    pathToFIle = JoinAbsFilePAth(splittedFileName);
+                }  
+                TRXfileContent = File.ReadAllText(pathToFIle);
+
             }
             catch (Exception)
             {

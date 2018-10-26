@@ -33,11 +33,6 @@ namespace GetResultsCI
             return ConfigurationManager.AppSettings["ReportFileExtension"];
         }
 
-        public static string GetTableHeader()
-        {
-            return ConfigurationManager.AppSettings["TableHeader"];
-        }
-
         public static int GetErrorsCount()
         {
             return Convert.ToInt32(ConfigurationManager.AppSettings["CountOfErrorsToInclude"]);
