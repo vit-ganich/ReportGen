@@ -73,7 +73,7 @@ namespace GetResultsCI
         /// <returns>String file content</returns>
         public static string ReadErrorReport(string[] splittedFileName)
         {
-            string TRXfileContent = "Error while reading the TRX-file";
+            string TRXfileContent = "Error while reading the TRX-file.";
             try
             {
                 string pathToFIle;
@@ -90,6 +90,7 @@ namespace GetResultsCI
             }
             catch (Exception)
             {
+                Console.WriteLine(TRXfileContent);
                 throw;
             }
             return TRXfileContent;

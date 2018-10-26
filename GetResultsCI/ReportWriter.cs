@@ -5,24 +5,26 @@ namespace GetResultsCI
 {
     class ReportWriter
     {
+        public static string ReportFolder { get; set; }
         public static string ReportName { get; set; }
-          
+
         public static void WriteToReportFile(string message)
         {
-            var reportFolder = CreateReportFolder();
+            ReportFolder = CreateReportFolder();
             var reportExtension = ConfigReader.GetReportFileExtension();
             var reportFile = string.Format($"{ReportName}.{reportExtension}");
 
-            if (reportFolder != null)
+            if (ReportFolder != null)
             {
                 using (StreamWriter file =
-                new StreamWriter(Path.Combine(reportFolder, reportFile), true))
+                new StreamWriter(Path.Combine(ReportFolder, reportFile), true))
                 {
                     file.Write(message);
                 }
             }
             else
             {
+                Console.WriteLine("Error while report file creation.");
                 throw new FileNotFoundException();
             }
         }

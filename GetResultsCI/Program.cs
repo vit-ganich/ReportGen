@@ -14,8 +14,15 @@ namespace GetResultsCI
     {
         static void Main(string[] args)
         {
-           Parser.Parse();
-           //string path = "\\\\w10x64-29\\Test Results\\CI\\10_23_2018\\CEP CM_1_CLTQACLIENT433\\90.22-MPCM Reminders_01_Oracle_Chrome_B7.7.18295.1-81-52-5-6.trx";
+            try
+            {
+                Parser.Parse();
+                PostOffice.EmailSend();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }

@@ -13,9 +13,16 @@ namespace GetResultsCI
         static string temp = "";
         public static void Parse()
         {
+
             var parsedFiles = GetFileNamesListOfArraysSplitBySlash();
-            var len = parsedFiles[0].Length;
+            if(parsedFiles.Count() == 0)
+            {
+                Console.Write("\nTest results directory is empty. ");
+                throw new IndexOutOfRangeException();
+            }
             
+            var len = parsedFiles[0].Length;
+
             // Report name equals the parent folder name (for instance: 10_22_2018)
             ReportWriter.ReportName = parsedFiles[0][len - 3];
 

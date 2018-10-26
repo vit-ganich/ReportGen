@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigReader.cs" />
+    <Compile Include="PostOffice.cs" />
     <Compile Include="TRXreader.cs" />
     <Compile Include="FolderScanner.cs" />
     <Compile Include="ReportWriter.cs" />
