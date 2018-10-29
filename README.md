@@ -24,7 +24,7 @@ The program parses the full path to each file and writes each file in summary.</
 Full path example - C:\Test Results\CI\10_22_2018\CLIENT435_TEST 3\99.09-Test sample_B1.1.100.1_63_35_0.trx </br>
 In addition, if the trx-file contains error records, the first five of them are being recorded in summary report.</br>
 
-Example of final csv-report (opens in Excel):</br>
+#### Example of final csv-report (opens in Excel):</br>
 
 ![Screenshot](sample.jpg)
 
