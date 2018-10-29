@@ -19,9 +19,10 @@ namespace GetResultsCI
                 Parser.Parse();
                 PostOffice.EmailSend();
             }
-            catch (Exception e)
+            catch(Exception ex)
             {
-                Console.WriteLine(e.Message);
+                Logger.Log.Error(ex.Message);
+                Logger.Log.Error(ex.StackTrace);
             }
         }
     }

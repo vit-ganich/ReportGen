@@ -15,27 +15,41 @@ namespace GetResultsCI
         {
             try
             {
+                string server = ConfigReader.GetSmtpServerPort()[0];
+                int port = Convert.ToInt32(ConfigReader.GetSmtpServerPort()[1]);
+                bool isSslEnabled = ConfigReader.GetSslEnabled();
+                string userMail = ConfigReader.GetSmtpServerCredentials()[0];
+                string userPass = ConfigReader.GetSmtpServerCredentials()[1];
+                string mailFrom = ConfigReader.GetSmtpMailFrom();
+                string mailTo = ConfigReader.GetSmtpMailTo();
+                string mailBody = ConfigReader.GetSmtpMailBody();
+
+                SmtpClient SmtpServer = new SmtpClient(server);
+                SmtpServer.Port = port;
+                SmtpServer.EnableSsl = isSslEnabled;
+                SmtpServer.Credentials = new NetworkCredential(userMail, userPass);
+                Logger.Log.Info("SMTP server settings were applied successfully.");
+
                 MailMessage mail = new MailMessage();
-                SmtpClient SmtpServer = new SmtpClient("smtp.yandex.ru");
-                mail.From = new MailAddress("******@yandex.ru");
-                mail.To.Add("*************");
+
+                mail.From = new MailAddress(mailFrom);
+                mail.To.Add(mailTo);
                 mail.Subject = $"CI summary {ReportWriter.ReportName}";
-                mail.Body = "This is email with auto-generated Ci summary.";
+                mail.Body = mailBody;
+                Logger.Log.Info("SMTP email message was created successfully.");
 
                 var pathToAttachFile = Path.Combine(ReportWriter.ReportFolder, ReportWriter.ReportName + "." + ConfigReader.GetReportFileExtension());
                 var attachment = new Attachment(pathToAttachFile);
                 mail.Attachments.Add(attachment);
-
-                SmtpServer.Port = 587;
-                SmtpServer.Credentials = new NetworkCredential("*********@yandex.ru", "************");
-                SmtpServer.EnableSsl = true;
+                Logger.Log.Info("SMTP email attachment was created successfully.");
 
                 SmtpServer.Send(mail);
-                Console.WriteLine("Email was sent successfully.");
+                Logger.Log.Info("Email was sent successfully.");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Console.WriteLine("Error while email sending.");
+                Logger.Log.Error(ex.Message);
+                Logger.Log.Error(ex.StackTrace);
                 throw;
             }
         }

@@ -20,23 +20,31 @@ namespace GetResultsCI
             var TRXfileContent = ReadErrorReport(splittedFileName);
 
             string extractedErrors = null;
-
-            int count = 0;
-            foreach (Match error in ErrorsToInclude(TRXfileContent))
+            try
             {
-                // To avoid the report encumbering, the number of errors must be limited
-                if (count == ConfigReader.GetErrorsCount()) { break; }
-
-                var strError = error.ToString();
-
-                // Only proper error messages will be encluded in report
-                if (!CheckErrorToExclude(strError))
+                int count = 0;
+                foreach (Match error in ErrorsToInclude(TRXfileContent))
                 {
-                    var temp = strError.Replace("<Message>", "");
-                    temp = temp.Replace("</Message>", "") + ",";
-                    extractedErrors += temp;
-                    count++;
+                    // To avoid the report encumbering, the number of errors must be limited
+                    if (count == ConfigReader.GetErrorsCount()) { break; }
+
+                    var strError = error.ToString();
+
+                    // Only proper error messages will be encluded in report
+                    if (!CheckErrorToExclude(strError))
+                    {
+                        var temp = strError.Replace("<Message>", "");
+                        temp = temp.Replace("</Message>", "") + ",";
+                        extractedErrors += temp;
+                        count++;
+                    }
                 }
+                Logger.Log.Info("Errors extracting was finished successfully.");
+            }
+            catch(Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
+                Logger.Log.Error(ex.StackTrace);
             }
             return extractedErrors;
         }
@@ -86,12 +94,11 @@ namespace GetResultsCI
                     pathToFIle = JoinAbsFilePAth(splittedFileName);
                 }  
                 TRXfileContent = File.ReadAllText(pathToFIle);
-
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Console.WriteLine(TRXfileContent);
-                throw;
+                Logger.Log.Error(ex.Message);
+                Logger.Log.Error(ex.StackTrace);
             }
             return TRXfileContent;
         }
