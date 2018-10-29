@@ -20,9 +20,10 @@ In it's turn, each of the subfolders contains diffrent trx-files like this:</br>
 20.02-Test sample_B1.1.100.1_31_0_0.trx</br>
 99.09-Test sample_B1.1.100.1_63_35_0.trx</br>
 
-The program parses the full path to each file (like this - C:\Test Results\CI\10_22_2018\CLIENT435_TEST 3\99.09-Test sample_B1.1.100.1_63_35_0.trx) and writes each file in summary.</br>
-In addition, if the trx-file contains error records, first five of them are being recorded in summary report.</br>
-</br>
+The program parses the full path to each file and writes each file in summary.</br>
+Full path example - C:\Test Results\CI\10_22_2018\CLIENT435_TEST 3\99.09-Test sample_B1.1.100.1_63_35_0.trx </br>
+In addition, if the trx-file contains error records, the first five of them are being recorded in summary report.</br>
+
 Example of final csv-report (opens in Excel):</br>
 
 ![Screenshot](sample.jpg)
