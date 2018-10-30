@@ -10,7 +10,7 @@ namespace GetResultsCI
         static string temp = "";
         public static void Parse()
         {
-            Logger.Log.Info("Start.");
+            Logger.Log.Info("Program started ----------------------------------------------------------------------------");
 
             List<string[]> parsedFiles = null;
 
@@ -24,12 +24,12 @@ namespace GetResultsCI
             }
 
             len = parsedFiles[0].Length;
-
             // Report name equals the parent folder name (for instance: 10_22_2018)
             ReportWriter.ReportName = parsedFiles[0][len - 3];
 
             WriteTableHeader();
 
+            Logger.Log.Info("Test results recording started.");
             try
             {
                 foreach (var parsedFile in parsedFiles)
@@ -47,8 +47,7 @@ namespace GetResultsCI
                     //var time = tail[0]; // not nesessary
                     var passed = tail[1];
                     var failed = tail[2];
-                    // cut the .trx extension part
-                    var skipped = tail[3].Split('.')[0];
+                    var skipped = tail[3].Split('.')[0]; // cut the .trx extension part
                     var result = (failed == "0") ? "PASSED" : "FAILED";
                     var errors = "-";
                     if (result.Equals("FAILED"))
@@ -132,7 +131,7 @@ namespace GetResultsCI
             ReportWriter.WriteToReportFile(stringToWrite);
             temp = CIgroup;
 
-            Logger.Log.Info("Test result was successfully recorded to the Report file:");
+            Logger.Log.Debug("Test result was successfully recorded to the Report file:");
             Logger.Log.Debug(stringToWrite);
         }
     }

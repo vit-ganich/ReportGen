@@ -9,7 +9,6 @@ namespace GetResultsCI
             try
             {
                 Parser.Parse();
-
                 Postman.EmailSend();
             }
             catch(Exception ex)

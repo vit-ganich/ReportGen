@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace GetResultsCI
 {
@@ -44,7 +40,7 @@ namespace GetResultsCI
                         count++;
                     }
                 }
-                Logger.Log.Info("Errors extracting was finished successfully.");
+                Logger.Log.Debug("Errors extracting was finished successfully.");
             }
             catch(Exception ex)
             {

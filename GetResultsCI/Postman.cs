@@ -9,7 +9,7 @@ namespace GetResultsCI
     {
         public static void EmailSend()
         {
-            Logger.Log.Info("SMTP email settings - checking data format.");
+            Logger.Log.Debug("SMTP email settings - checking data format.");
 
             #region Email settings
             string server = ConfigReader.GetSmtpServerPort()[0];
@@ -22,7 +22,7 @@ namespace GetResultsCI
             string mailBody = ConfigReader.GetSmtpMailBody();
             #endregion
 
-            Logger.Log.Info("SMTP email settings have a correct data format.");
+            Logger.Log.Debug("SMTP email settings have a correct data format.");
 
             SmtpClient SmtpServer = new SmtpClient(server);
             SmtpServer.Port = port;
