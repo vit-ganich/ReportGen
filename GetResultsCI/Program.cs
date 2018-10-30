@@ -1,12 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Excel = Microsoft.Office.Interop.Excel;
-
 
 namespace GetResultsCI
 {
@@ -17,12 +9,12 @@ namespace GetResultsCI
             try
             {
                 Parser.Parse();
-                PostOffice.EmailSend();
+
+                Postman.EmailSend();
             }
             catch(Exception ex)
             {
-                Logger.Log.Error(ex.Message);
-                Logger.Log.Error(ex.StackTrace);
+                Logger.Log.Error(ex);
             }
         }
     }

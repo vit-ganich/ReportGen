@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using log4net;
 
 namespace GetResultsCI
 {
@@ -44,6 +39,7 @@ namespace GetResultsCI
         public static string GetTheLastResultsFolder()
         {
             var parentDir = ConfigReader.GetTestResultsDir();
+
             Logger.Log.Info($"Scanning the subfolders of the '{parentDir}' folder");
 
             if (!Directory.Exists(parentDir))

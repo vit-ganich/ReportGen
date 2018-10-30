@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GetResultsCI
 {
@@ -19,10 +15,7 @@ namespace GetResultsCI
             return ConfigurationManager.AppSettings["FilesExtension"];
         }
         #endregion
-        public static string GetDateTimeFormat()
-        {
-            return ConfigurationManager.AppSettings["DateTimeFormat"];
-        }
+        
         #region Report file settongs
         public static string GetReportFolder()
         {
@@ -64,6 +57,13 @@ namespace GetResultsCI
         public static string GetSmtpMailBody()
         {
             return ConfigurationManager.AppSettings["SmtpMailBody"];
+        }
+        #endregion
+
+        #region Date and time settings
+        public static string GetDateTimeFormat()
+        {
+            return ConfigurationManager.AppSettings["DateTimeFormat"];
         }
         #endregion
     }

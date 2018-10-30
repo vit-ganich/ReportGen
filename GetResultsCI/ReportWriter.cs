@@ -11,7 +11,9 @@ namespace GetResultsCI
         public static void WriteToReportFile(string message)
         {
             ReportFolder = CreateReportFolder();
+
             var reportExtension = ConfigReader.GetReportFileExtension();
+
             var reportFile = string.Format($"{ReportName}.{reportExtension}");
 
             if (ReportFolder != null)
@@ -24,7 +26,7 @@ namespace GetResultsCI
             }
             else
             {
-                Console.WriteLine("Error while report file creation.");
+                Logger.Log.Error("Error while report file creation.");
                 throw new FileNotFoundException();
             }
         }
@@ -33,15 +35,16 @@ namespace GetResultsCI
             try
             {
                 reportFolder = ConfigReader.GetReportFolder();
+
                 if (!Directory.Exists(reportFolder))
                 {
                     var myDir = Directory.CreateDirectory(reportFolder);
-                    Console.WriteLine(string.Format("\nLog file folder: {0} was succesfully created...\n", reportFolder));
+                    Logger.Log.Info((string.Format("\nLog file folder: {0} was succesfully created...\n", reportFolder)));
                 }
             }
             catch (Exception)
             {
-                Console.WriteLine("Report folder creation failure. File will be saved in C:\\ root");
+                Logger.Log.Error("Report folder creation failure. File will be saved in C:\\ root");
                 throw;
             }
             return reportFolder;

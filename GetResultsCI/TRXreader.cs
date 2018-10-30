@@ -33,8 +33,13 @@ namespace GetResultsCI
                     // Only proper error messages will be encluded in report
                     if (!CheckErrorToExclude(strError))
                     {
-                        var temp = strError.Replace("<Message>", "");
-                        temp = temp.Replace("</Message>", "") + ",";
+                        //old variant covered not all error messages
+                        //var temp = strError.Replace("<Message>", "");
+                        //temp = temp.Replace("</Message>", "") + ",";
+                        //---------------------------------------------
+                        var temp = strError.Replace("-&gt; error: ", "");
+                        temp = temp.Replace("</StdOut>", "");
+                        temp = temp.Replace("\r", ",");
                         extractedErrors += temp;
                         count++;
                     }
@@ -59,7 +64,10 @@ namespace GetResultsCI
         public static MatchCollection ErrorsToInclude(string TRXfileContent)
         {
             // Error messages are enclosed in <Message> tags
-            Regex include = new Regex("<Message>(.+?)</Message>");
+            // old variant covered not all error messages
+            //Regex include = new Regex("<Message>(.+?)</Message>");
+            //------------------------------------------------------
+            Regex include = new Regex("-&gt; error:(.+?)*.");
             return include.Matches(TRXfileContent);
         }
 
