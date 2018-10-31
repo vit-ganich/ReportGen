@@ -40,8 +40,9 @@ namespace GetResultsCI
             mail.Attachments.Add(attachment);
             Logger.Log.Info("SMTP email attachment was created successfully.");
 
+            Logger.Log.Info("Email sending, please, wait...");
             SmtpServer.Send(mail);
-            Logger.Log.Info("Email was sent successfully.");
+            Logger.Log.Info("Email was successfully sent to all recipients.");
         }
     }
 }
