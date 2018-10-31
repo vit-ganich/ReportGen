@@ -37,18 +37,17 @@ namespace GetResultsCI
         {
             return ConfigurationManager.AppSettings["SmtpServerPort"].Split(',');
         }
+
         public static string[] GetSmtpServerCredentials()
         {
             return ConfigurationManager.AppSettings["SmtpServerCredentials"].Split(',');
         }
+
         public static bool GetSslEnabled()
         {
             return Convert.ToBoolean(ConfigurationManager.AppSettings["SmtpServerEnableSsl"]);
         }
-        public static string GetSmtpMailFrom()
-        {
-            return ConfigurationManager.AppSettings["SmtpMailFrom"];
-        }
+
         public static string GetSmtpMailTo()
         {
             return ConfigurationManager.AppSettings["SmtpMailTo"];

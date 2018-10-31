@@ -17,7 +17,6 @@ namespace GetResultsCI
             bool isSslEnabled = ConfigReader.GetSslEnabled();
             string userMail = ConfigReader.GetSmtpServerCredentials()[0];
             string userPass = ConfigReader.GetSmtpServerCredentials()[1];
-            string mailFrom = ConfigReader.GetSmtpMailFrom();
             string mailTo = ConfigReader.GetSmtpMailTo();
             string mailBody = ConfigReader.GetSmtpMailBody();
             #endregion
@@ -31,7 +30,7 @@ namespace GetResultsCI
 
             MailMessage mail = new MailMessage();
 
-            mail.From = new MailAddress(mailFrom);
+            mail.From = new MailAddress(userMail);
             mail.To.Add(mailTo);
             mail.Subject = $"CI summary {ReportWriter.ReportName}";
             mail.Body = mailBody;
