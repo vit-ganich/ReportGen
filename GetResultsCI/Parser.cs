@@ -4,71 +4,49 @@ using System.Text.RegularExpressions;
 
 namespace GetResultsCI
 {
-    class Parser
+    public class Parser
     {
         // Temporary variable for groups dividing
         static string temp = "";
-        public static void Parse()
+        public static string[] Parse(string[] parsedFile, int len)
         {
-            Logger.Log.Info("Program started -----------------------------------------------------------------------");
-
-            List<string[]> parsedFiles = null;
-
-            int len = 0;
-
-            parsedFiles = GetFileNamesListOfArraysSplitBySlash();
-
-            if (parsedFiles == null)
-            {
-                throw new Exception("Test results directory is empty.");
-            }
-
-            len = parsedFiles[0].Length;
-            // Report name equals the parent folder name (for instance: 10_22_2018)
-            ReportWriter.ReportName = parsedFiles[0][len - 3];
-
-            WriteTableHeader();
-
-            Logger.Log.Info("Test results recording started.");
             try
             {
-                foreach (var parsedFile in parsedFiles)
+                #region Parts of parsed name of the trx-file
+                var rawCIgroupClient = parsedFile[len - 2];
+                var client = RegExClient(rawCIgroupClient);
+                var CIgroup = rawCIgroupClient.Replace("_" + client, "");
+                var rawBody = parsedFile[len - 1];
+                var rawTail = RegExTail(rawBody);
+                var tail = rawTail.Split('-');
+                var rawTestNameBuild = rawBody.Replace("-" + rawTail, "");
+                var build = RegExVersion(rawTestNameBuild);
+                var testName = rawTestNameBuild.Replace("_" + build, "");
+                //var time = tail[0]; // not nesessary
+                var passed = tail[1];
+                var failed = tail[2];
+                var skipped = tail[3].Split('.')[0]; // cut the .trx extension part
+                var result = (failed == "0") ? "PASSED" : "FAILED";
+                var errors = "-";
+                if (result.Equals("FAILED"))
                 {
-                    #region Parts of parsed name of the trx-file
-                    var rawCIgroupClient = parsedFile[len - 2];
-                    var client = RegExClient(rawCIgroupClient);
-                    var CIgroup = rawCIgroupClient.Replace("_" + client, "");
-                    var rawBody = parsedFile[len - 1];
-                    var rawTail = RegExTail(rawBody);
-                    var tail = rawTail.Split('-');
-                    var rawTestNameBuild = rawBody.Replace("-" + rawTail, "");
-                    var build = RegExVersion(rawTestNameBuild);
-                    var testName = rawTestNameBuild.Replace("_" + build, "");
-                    //var time = tail[0]; // not nesessary
-                    var passed = tail[1];
-                    var failed = tail[2];
-                    var skipped = tail[3].Split('.')[0]; // cut the .trx extension part
-                    var result = (failed == "0") ? "PASSED" : "FAILED";
-                    var errors = "-";
-                    if (result.Equals("FAILED"))
-                    {
-                        errors = TRXreader.ExtractErrorStrings(parsedFile);
-                    }
-                    #endregion
-                    string stringToWrite = $"{client},{CIgroup},{testName},{build},{passed},{failed},{skipped},{result},{errors}\n";
-                    WriteWithSeparationByGroups(stringToWrite, CIgroup);
+                    errors = TRXreader.ExtractErrorStrings(parsedFile);
                 }
+                #endregion
+                string stringToWrite = $"{client},{CIgroup},{testName},{build},{passed},{failed},{skipped},{result},{errors}\n";
+                return new string[] { stringToWrite, CIgroup };
             }
             catch
             {
                 Logger.Log.Error("Unsupported format of TRX-filename.");
                 throw new FormatException();
             }
-            Logger.Log.Info($"All tasks were finished successfully, report file was created in {ConfigReader.GetReportFolder()} folder.");
         }
 
         public static List<string[]> GetFileNamesListOfArraysSplitBySlash()
         {
+            Logger.Log.Info("Program started -----------------------------------------------------------------------");
+
             var parsedFiles = new List<string[]>();
 
             var files = FolderScanner.ScanFolder();
@@ -80,14 +58,22 @@ namespace GetResultsCI
             }
             Logger.Log.Info("All filenames in the folder were splitted by '\\' and added in list succesfully.");
 
+            if (parsedFiles == null)
+            {
+                throw new Exception("Test results directory is empty.");
+            }
             return parsedFiles;
         }
 
-        public static void WriteTableHeader()
+        public static void GetReportNameAndWriteTableHeader(List<string[]> parsedFiles, int length)
         {
+            // Report name equals the parent folder name (for instance: 10_22_2018)
+            ReportWriter.ReportName = parsedFiles[0][length - 3];
+
             ReportWriter.WriteToReportFile("Summary\n");
             ReportWriter.WriteToReportFile("QA_Client,CI Group,Test name,Build Version,Passed,Failed,Skipped,Result,Errors\n");
             Logger.Log.Info("Table header was successfully created.");
+            Logger.Log.Info("Test results recording started.");
         }
 
         public static string RegExClient(string rawFileName)
@@ -121,8 +107,11 @@ namespace GetResultsCI
             return match.ToString();
         }
 
-        public static void WriteWithSeparationByGroups(string stringToWrite, string CIgroup)
+        public static void WriteWithSeparationByGroups(string[] textAndCIgroup)
         {
+            var stringToWrite = textAndCIgroup[0];
+            var CIgroup = textAndCIgroup[1];
+
             // If the group is not equal to pervious group (temp) - write blank space
             if (!CIgroup.Equals(temp) && !temp.Equals(""))
             {
