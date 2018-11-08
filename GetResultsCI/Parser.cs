@@ -34,6 +34,7 @@ namespace GetResultsCI
                 }
                 #endregion
                 string stringToWrite = $"{client},{CIgroup},{testName},{build},{passed},{failed},{skipped},{result},{errors}\n";
+
                 return new string[] { stringToWrite, CIgroup };
             }
             catch
@@ -69,7 +70,6 @@ namespace GetResultsCI
         {
             // Report name equals the parent folder name (for instance: 10_22_2018)
             ReportWriter.ReportName = parsedFiles[0][length - 3];
-
             ReportWriter.WriteToReportFile("Summary\n");
             ReportWriter.WriteToReportFile("QA_Client,CI Group,Test name,Build Version,Passed,Failed,Skipped,Result,Errors\n");
             Logger.Log.Info("Table header was successfully created.");

@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GetResultsCI\GetResultsCI.csproj">
-      <Project>{2E129D7C-7AD2-4A33-8094-A6F8052B5A24}</Project>
+      <Project>{2e129d7c-7ad2-4a33-8094-a6f8052b5a24}</Project>
       <Name>GetResultsCI</Name>
     </ProjectReference>
   </ItemGroup>

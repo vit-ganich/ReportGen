@@ -2,7 +2,7 @@
 
 namespace GetResultsCI
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -11,7 +11,7 @@ namespace GetResultsCI
                 var parsedFiles = Parser.GetFileNamesListOfArraysSplitBySlash();
 
                 int len = parsedFiles[0].Length;
-                
+
                 Parser.GetReportNameAndWriteTableHeader(parsedFiles, len);
 
                 foreach (var parsedFile in parsedFiles)

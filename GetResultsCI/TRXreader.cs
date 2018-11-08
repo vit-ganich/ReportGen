@@ -35,8 +35,8 @@ namespace GetResultsCI
                         //---------------------------------------------
                         var temp = strError.Replace("-&gt; error: ", "");
                         temp = temp.Replace("</StdOut>", "");
-                        temp = temp.Replace("\r", ",");
-                        extractedErrors += temp;
+                        temp = temp.Replace("\r", "");
+                        extractedErrors += temp + ",";
                         count++;
                     }
                 }
