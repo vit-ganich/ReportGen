@@ -6,6 +6,10 @@ namespace GetResultsCI
 {
     public class Parser
     {
+        static string excelFormula = null;
+        // Delimiter depends on the report file extension (csv - "," tsv - "\t")
+        static string del = ChooseDelimiter();
+
         // Temporary variable for groups dividing
         static string temp = "";
         public static string[] Parse(string[] parsedFile, int len)
@@ -33,8 +37,7 @@ namespace GetResultsCI
                     errors = TRXreader.ExtractErrorStrings(parsedFile);
                 }
                 #endregion
-                string stringToWrite = $"{client},{CIgroup},{testName},{build},{passed},{failed},{skipped},{result},{errors}\n";
-
+                string stringToWrite = $"{client}{del}{CIgroup}{del}{testName}{del}{build}{del}{passed}{del}{failed}{del}{skipped}{del}{result}{del}{errors}\n";
                 return new string[] { stringToWrite, CIgroup };
             }
             catch
@@ -68,10 +71,10 @@ namespace GetResultsCI
 
         public static void GetReportNameAndWriteTableHeader(List<string[]> parsedFiles, int length)
         {
-            // Report name equals the parent folder name (for instance: 10_22_2018)
             ReportWriter.ReportName = parsedFiles[0][length - 3];
-            ReportWriter.WriteToReportFile("Summary\n");
-            ReportWriter.WriteToReportFile("QA_Client,CI Group,Test name,Build Version,Passed,Failed,Skipped,Result,Errors\n");
+            ReportWriter.WriteToReportFile($"Summary{del}{del}Passed{del}{excelFormula}{del}%\n");
+
+            ReportWriter.WriteToReportFile($"QA_Client{del}CI Group{del}Test name{del}Build Version{del}Passed{del}Failed{del}Skipped{del}Result{del}Errors\n");
             Logger.Log.Info("Table header was successfully created.");
             Logger.Log.Info("Test results recording started.");
         }
@@ -122,6 +125,21 @@ namespace GetResultsCI
 
             Logger.Log.Debug("Test result was successfully recorded to the Report file:");
             Logger.Log.Debug(stringToWrite);
+        }
+
+        public static string ChooseDelimiter()
+        {
+            switch (ConfigReader.GetReportFileExtension().ToLower())
+            {
+                case "tsv":
+                    // This formula works only with tsv-files
+                    excelFormula = "=(COUNTIF(H3:H500,\"=PASSED\")/(COUNTIF(H3:H500,\"=FAILED\")+COUNTIF(H3:H500,\"=PASSED\"))*100)";
+                    return "\t";
+
+                default:
+                    excelFormula = "unknown";
+                    return ",";
+            }
         }
     }
 }
