@@ -1,110 +1,110 @@
 ﻿using System;
-using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace GetResultsCI
 {
     class TRXreader
     {
-        /// <summary>
-        /// Method reads the file and returns the string with errors
-        /// </summary>
-        /// <param name="splittedFileName">String array, consisted of parts of splitted file path</param>
-        /// <returns>String with comma-separated errors</returns>
-        public static string ExtractErrorStrings(string[] splittedFileName)
+        public static string GetErrorMessages(string[] splittedFileName)
         {
-            var TRXfileContent = ReadErrorReport(splittedFileName);
+            XmlDocument xDoc = ReadErrorReport(splittedFileName);
+            int count = 0; // counter for limitation of the errors number
+            StringBuilder errorString = new StringBuilder();
 
-            string extractedErrors = null;
             try
             {
-                int count = 0;
-                foreach (Match error in ErrorsToInclude(TRXfileContent))
+                // Awful nested foreach's, but I can't come up with elegant solution
+                foreach (XmlNode xnode in xDoc.DocumentElement)
                 {
-                    // To avoid the report encumbering, the number of errors must be limited
-                    if (count == ConfigReader.GetErrorsCount()) { break; }
-
-                    var strError = error.ToString();
-
-                    // Only proper error messages will be encluded in report
-                    if (!CheckErrorToExclude(strError))
+                    foreach (XmlNode firstChild in xnode.ChildNodes)
                     {
-                        //old variant covered not all error messages
-                        //var temp = strError.Replace("<Message>", "");
-                        //temp = temp.Replace("</Message>", "") + ",";
-                        //---------------------------------------------
-                        var temp = strError.Replace("-&gt; error: ", "");
-                        temp = temp.Replace("</StdOut>", "");
-                        temp = temp.Replace("\r", "");
-                        extractedErrors += temp + ",";
-                        count++;
+                        XmlAttribute testName = firstChild.Attributes["testName"];
+
+                        foreach (XmlNode secondChild in firstChild.ChildNodes)
+                        {
+                            foreach (XmlNode thirdChild in secondChild.ChildNodes)
+                            {
+                                if (thirdChild.Name.Equals("ErrorInfo"))
+                                {
+                                    // To avoid the report encumbering, the number of errors must be limited
+                                    if (count == ConfigReader.GetErrorsCount()) { break; }
+
+                                    foreach (XmlNode forthChild in thirdChild.ChildNodes)
+                                    {
+                                        if (forthChild.Name.Equals("Message"))
+                                        {
+                                            // Skip the Inconclusive steps
+                                            if (!forthChild.InnerText.StartsWith("Assert.Inconclusive failed."))
+                                            {
+                                                string testNumber = ExtractTestNumber(testName.InnerText);
+
+                                                string errorMessage = ExtractErrorMessage(forthChild.InnerText);
+
+                                                errorString.Append(string.Format("{0} - {1}\t", testNumber, errorMessage));
+                                                count++;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 Logger.Log.Debug("Errors extracting was finished successfully.");
-            }
-            catch(Exception ex)
-            {
-                Logger.Log.Error(ex.Message);
-                Logger.Log.Error(ex.StackTrace);
-            }
-            return extractedErrors;
-        }
-
-        public static bool CheckErrorToExclude(string error)
-        {
-            // This errors caused by skipped steps and must be skipped too
-            Regex exclude = new Regex("Assert.Inconclusive failed.");
-            return exclude.IsMatch(error);
-        }
-
-        public static MatchCollection ErrorsToInclude(string TRXfileContent)
-        {
-            // Error messages are enclosed in <Message> tags
-            // old variant covered not all error messages
-            //Regex include = new Regex("<Message>(.+?)</Message>");
-            //------------------------------------------------------
-            Regex include = new Regex("-&gt; error:(.+?)*.");
-            return include.Matches(TRXfileContent);
-        }
-
-        /// <summary>
-        /// Method joins splitted items of array to create full path to file
-        /// </summary>
-        /// <param name="splittedFileName"></param>
-        /// <returns>String full path</returns>
-        public static string JoinAbsFilePAth(string[] splittedFileName)
-        {
-            return string.Join("\\", splittedFileName);
-            //return Path.Combine(splittedFileName);
-        }
-
-        /// <summary>
-        /// Method takes the full path to file and returns a string with file content
-        /// </summary>
-        /// <param name="splittedFileName"></param>
-        /// <returns>String file content</returns>
-        public static string ReadErrorReport(string[] splittedFileName)
-        {
-            string TRXfileContent = "Error while reading the TRX-file.";
-            try
-            {
-                string pathToFIle;
-                if (!splittedFileName[0].Contains(":"))
-                {
-                    pathToFIle = "\\\\" + JoinAbsFilePAth(splittedFileName);
-                }
-                else
-                {
-                    pathToFIle = JoinAbsFilePAth(splittedFileName);
-                }  
-                TRXfileContent = File.ReadAllText(pathToFIle);
             }
             catch (Exception ex)
             {
                 Logger.Log.Error(ex.Message);
                 Logger.Log.Error(ex.StackTrace);
             }
-            return TRXfileContent;
+            return errorString.ToString();
+        }
+
+        public static string ExtractTestNumber(string testName)
+        {
+            Regex rx = new Regex(@"(_\d\d*_\d\d*_\d\d*_\d\d*)|(_\d\d*_\d\d*_\d\d*)");
+            Match match = rx.Match(testName);
+            return match.ToString();
+        }
+
+        public static string ExtractErrorMessage(string rawString)
+        {
+            string errorMessage = rawString.Replace("Assert.IsTrue failed. ", "");
+
+            if (errorMessage.Length >= 100)
+            {
+                Regex ex = new Regex(@"System.*");
+                Match match = ex.Match(errorMessage);
+
+                if (match.Length != 0) { errorMessage = match.ToString(); }
+
+                else { errorMessage = errorMessage.Substring(0, 90); }
+            }
+            return errorMessage.Trim();
+        }
+
+        public static XmlDocument ReadErrorReport(string[] splittedFileName)
+        {
+            XmlDocument xmlDocument = new XmlDocument();
+
+            try
+            {
+                string pathToFIle = string.Join("\\", splittedFileName);
+
+                if (!splittedFileName[0].Contains(":"))
+                {
+                    pathToFIle = "\\\\" + pathToFIle;
+                }
+                xmlDocument.Load(pathToFIle);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
+                Logger.Log.Error(ex.StackTrace);
+            }
+            return xmlDocument;
         }
     }
 }

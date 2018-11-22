@@ -30,6 +30,7 @@ namespace GetResultsCI
                 throw new FileNotFoundException();
             }
         }
+
         public static string CreateReportFolder(string reportFolder="C:\\")
         {
             try

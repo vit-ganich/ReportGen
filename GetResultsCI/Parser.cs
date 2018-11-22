@@ -26,7 +26,7 @@ namespace GetResultsCI
                 var rawTestNameBuild = rawBody.Replace("-" + rawTail, "");
                 var build = RegExVersion(rawTestNameBuild);
                 var testName = rawTestNameBuild.Replace("_" + build, "");
-                //var time = tail[0]; // not nesessary
+                var time = tail[0];
                 var passed = tail[1];
                 var failed = tail[2];
                 var skipped = tail[3].Split('.')[0]; // cut the .trx extension part
@@ -34,10 +34,10 @@ namespace GetResultsCI
                 var errors = "-";
                 if (result.Equals("FAILED"))
                 {
-                    errors = TRXreader.ExtractErrorStrings(parsedFile);
+                    errors = TRXreader.GetErrorMessages(parsedFile);
                 }
                 #endregion
-                string stringToWrite = $"{client}{del}{CIgroup}{del}{testName}{del}{build}{del}{passed}{del}{failed}{del}{skipped}{del}{result}{del}{errors}\n";
+                string stringToWrite = $"{client}{del}{CIgroup}{del}{testName}{del}{build}{del}{time}{del}{passed}{del}{failed}{del}{skipped}{del}{result}{del}{errors}\n";
                 return new string[] { stringToWrite, CIgroup };
             }
             catch
@@ -74,7 +74,7 @@ namespace GetResultsCI
             ReportWriter.ReportName = parsedFiles[0][length - 3];
             ReportWriter.WriteToReportFile($"Summary{del}{del}Passed{del}{excelFormula}{del}%\n");
 
-            ReportWriter.WriteToReportFile($"QA_Client{del}CI Group{del}Test name{del}Build Version{del}Passed{del}Failed{del}Skipped{del}Result{del}Errors\n");
+            ReportWriter.WriteToReportFile($"QA_Client{del}CI Group{del}Test name{del}Build Version{del}Time{del}Passed{del}Failed{del}Skipped{del}Result{del}Errors\n");
             Logger.Log.Info("Table header was successfully created.");
             Logger.Log.Info("Test results recording started.");
         }
