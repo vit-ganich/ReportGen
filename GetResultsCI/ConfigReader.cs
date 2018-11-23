@@ -23,11 +23,14 @@ namespace GetResultsCI
         #endregion
 
         #region Email settings
+
+        public static bool IsSmtpEnabled => Convert.ToBoolean(AppSettings["SmtpEnabled"].ToLower());
+
         public static string[] SmtpServerPort => AppSettings["SmtpServerPort"].Split(',');
  
         public static string[] SmtpServerCredentials => AppSettings["SmtpServerCredentials"].Split(',');
 
-        public static bool IsSslEnabled => Convert.ToBoolean(AppSettings["SmtpServerEnableSsl"]);
+        public static bool IsSslEnabled => Convert.ToBoolean(AppSettings["SmtpServerEnableSsl"].ToLower());
 
         public static string SmtpMailTo => AppSettings["SmtpMailTo"];
 

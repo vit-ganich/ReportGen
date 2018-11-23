@@ -13,9 +13,9 @@ namespace GetResultsCI
 
                 int len = parsedFiles[0].Length;
 
-                Parser.GetReportNameAndWriteTableHeader(parsedFiles, len);
-
                 StringBuilder textToWrite = new StringBuilder();
+
+                textToWrite.Append(Parser.GetReportNameAndWriteTableHeader(parsedFiles, len));
 
                 foreach (var parsedFile in parsedFiles)
                 {
@@ -27,7 +27,9 @@ namespace GetResultsCI
 
                 Logger.Log.Info($"All tasks were finished successfully, report file was created in {ConfigReader.ReportFolder} folder.");
 
-                Postman.EmailSend();
+                if (ConfigReader.IsSmtpEnabled == true) { Postman.EmailSend(); }
+
+                else { Logger.Log.Info("SMTP emails disabled in App.config, email wasn't sent."); }
             }
             catch (Exception ex)
             {

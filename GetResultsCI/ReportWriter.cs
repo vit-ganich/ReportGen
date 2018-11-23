@@ -21,7 +21,7 @@ namespace GetResultsCI
             Logger.Log.Debug("Test result was successfully extracted");
             Logger.Log.Debug(stringToWrite);
 
-            return stringToWrite;
+            return stringToWrite.Replace("\r", "");
         }
 
         public static void WriteToReportFile(string message)

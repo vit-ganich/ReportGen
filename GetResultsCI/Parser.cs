@@ -68,13 +68,16 @@ namespace GetResultsCI
             return parsedFiles;
         }
 
-        public static void GetReportNameAndWriteTableHeader(List<string[]> parsedFiles, int length)
+        public static string GetReportNameAndWriteTableHeader(List<string[]> parsedFiles, int length)
         {
             ReportWriter.ReportName = parsedFiles[0][length - 3];
-            ReportWriter.WriteToReportFile($"CI summary:{del}{del}{excelFormula}\n\n");
-            ReportWriter.WriteToReportFile($"QA_Client{del}CI Group{del}Test name{del}Build Version{del}Time{del}Passed{del}Failed{del}Skipped{del}Result{del}Errors\n");
+
+            string formula = $"CI summary:{del}{del}{excelFormula}\n\n";
+            string tableHeader = $"QA_Client{del}CI Group{del}Test name{del}Build Version{del}Time{del}Passed{del}Failed{del}Skipped{del}Result{del}Errors\n";
+           
             Logger.Log.Info("Table header with formulas was successfully created.");
             Logger.Log.Info("Test results recording started.");
+            return string.Format($"{formula}{tableHeader}");
         }
 
         public static string RegExClient(string rawFileName)

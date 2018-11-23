@@ -83,7 +83,7 @@ namespace GetResultsCI
 
                 else { errorMessage = errorMessage.Substring(0, lengthLimit); }
             }
-            return errorMessage.Trim();
+            return errorMessage.Trim().Replace("\n", ""); // fixed some issues
         }
 
         public static XmlDocument ReadErrorReport(string[] splittedFileName)
