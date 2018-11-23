@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace GetResultsCI
@@ -9,7 +10,7 @@ namespace GetResultsCI
         {
             try
             {
-                var parsedFiles = Parser.GetFileNamesListOfArraysSplitBySlash();
+                List<string[]> parsedFiles = Parser.GetFileNamesListOfArraysSplitBySlash();
 
                 int len = parsedFiles[0].Length;
 

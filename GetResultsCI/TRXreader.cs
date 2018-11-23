@@ -92,7 +92,7 @@ namespace GetResultsCI
             try
             {
                 // For network folder
-                string pathToFIle = string.Join("\\", splittedFileName);
+                var pathToFIle = string.Join("\\", splittedFileName);
 
                 // For local folder on a disk
                 if (!splittedFileName[0].Contains(":")) { pathToFIle = "\\\\" + pathToFIle; }

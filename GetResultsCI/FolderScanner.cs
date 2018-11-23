@@ -10,7 +10,7 @@ namespace GetResultsCI
         {
             var filesInFolder = new List<string>();
 
-            var resultsCIfolder = GetTheLastResultsFolder();
+            string resultsCIfolder = GetTheLastResultsFolder();
 
             if (resultsCIfolder == null)
             {
@@ -38,7 +38,7 @@ namespace GetResultsCI
 
         public static string GetTheLastResultsFolder()
         {
-            var parentDir = ConfigReader.TestResultsDir;
+            string parentDir = ConfigReader.TestResultsDir;
 
             Logger.Log.Info($"Scanning the subfolders of the '{parentDir}' folder");
 
@@ -47,7 +47,7 @@ namespace GetResultsCI
                 throw new DirectoryNotFoundException("Search directory doesn't exist.");
             }
 
-            var dateFormat = ConfigReader.DateTimeFormat;
+            string dateFormat = ConfigReader.DateTimeFormat;
 
             int searchRange = 10; // days from today for search, if the results folder for today is absent
 

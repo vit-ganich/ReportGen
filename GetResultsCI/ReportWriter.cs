@@ -10,8 +10,8 @@ namespace GetResultsCI
 
         public static string WriteWithSeparationByGroups(string[] textAndCIgroup)
         {
-            var stringToWrite = textAndCIgroup[0];
-            var CIgroup = textAndCIgroup[1];
+            string stringToWrite = textAndCIgroup[0];
+            string CIgroup = textAndCIgroup[1];
 
             // If the group is not equal to pervious group (temp) - add blank space for better readability
             if (!CIgroup.Equals(Parser.temp) && !Parser.temp.Equals("")) { stringToWrite = "\n" + stringToWrite; }
@@ -28,7 +28,7 @@ namespace GetResultsCI
         {
             ReportFolder = CreateReportFolder();
 
-            var reportExtension = ConfigReader.ReportFileExtension;
+            string reportExtension = ConfigReader.ReportFileExtension;
 
             var reportFile = string.Format($"{ReportName}.{reportExtension}");
 

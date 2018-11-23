@@ -52,7 +52,7 @@ namespace GetResultsCI
             Logger.Log.Info("Program started -----------------------------------------------------------------------");
 
             var parsedFiles = new List<string[]>();
-            var files = FolderScanner.ScanFolder();
+            List<string> files = FolderScanner.ScanFolder();
 
             foreach (var file in files)
             {
@@ -72,8 +72,8 @@ namespace GetResultsCI
         {
             ReportWriter.ReportName = parsedFiles[0][length - 3];
 
-            string formula = $"CI summary:{del}{del}{excelFormula}\n\n";
-            string tableHeader = $"QA_Client{del}CI Group{del}Test name{del}Build Version{del}Time{del}Passed{del}Failed{del}Skipped{del}Result{del}Errors\n";
+            var formula = $"CI summary:{del}{del}{excelFormula}\n\n";
+            var tableHeader = $"QA_Client{del}CI Group{del}Test name{del}Build Version{del}Time{del}Passed{del}Failed{del}Skipped{del}Result{del}Errors\n";
            
             Logger.Log.Info("Table header with formulas was successfully created.");
             Logger.Log.Info("Test results recording started.");
