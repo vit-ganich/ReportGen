@@ -10,8 +10,8 @@ namespace GetResultsCI
         public static string GetErrorMessages(string[] splittedFileName)
         {
             XmlDocument xDoc = ReadErrorReport(splittedFileName);
-            int count = 0; // counter for limitation of the errors number
             StringBuilder errorString = new StringBuilder();
+            int count = 0; // counter for limitation of the errors number
 
             try
             {
@@ -29,7 +29,7 @@ namespace GetResultsCI
                                 if (thirdChild.Name.Equals("ErrorInfo"))
                                 {
                                     // To avoid the report encumbering, the number of errors must be limited
-                                    if (count == ConfigReader.GetErrorsCount()) { break; }
+                                    if (count == ConfigReader.ErrorsCount) { break; }
 
                                     foreach (XmlNode forthChild in thirdChild.ChildNodes)
                                     {
@@ -72,15 +72,16 @@ namespace GetResultsCI
         public static string ExtractErrorMessage(string rawString)
         {
             string errorMessage = rawString.Replace("Assert.IsTrue failed. ", "");
-
-            if (errorMessage.Length >= 100)
+            int lengthLimit = 90;
+            // Long error message usually indicates, that the method trew exception
+            if (errorMessage.Length >= lengthLimit)
             {
                 Regex ex = new Regex(@"System.*");
                 Match match = ex.Match(errorMessage);
 
                 if (match.Length != 0) { errorMessage = match.ToString(); }
 
-                else { errorMessage = errorMessage.Substring(0, 90); }
+                else { errorMessage = errorMessage.Substring(0, lengthLimit); }
             }
             return errorMessage.Trim();
         }
@@ -88,15 +89,14 @@ namespace GetResultsCI
         public static XmlDocument ReadErrorReport(string[] splittedFileName)
         {
             XmlDocument xmlDocument = new XmlDocument();
-
             try
             {
+                // For network folder
                 string pathToFIle = string.Join("\\", splittedFileName);
 
-                if (!splittedFileName[0].Contains(":"))
-                {
-                    pathToFIle = "\\\\" + pathToFIle;
-                }
+                // For local folder on a disk
+                if (!splittedFileName[0].Contains(":")) { pathToFIle = "\\\\" + pathToFIle; }
+
                 xmlDocument.Load(pathToFIle);
             }
             catch (Exception ex)

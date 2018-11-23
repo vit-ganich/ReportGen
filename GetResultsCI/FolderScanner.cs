@@ -18,7 +18,7 @@ namespace GetResultsCI
             }
             Logger.Log.Info($"CI results folder: {resultsCIfolder}");
 
-            var extension = string.Format($"*.{ConfigReader.GetFilesExtension()}");
+            var extension = string.Format($"*.{ConfigReader.FilesExtension}");
 
             Logger.Log.Info("Scanning the folder... Please, wait...");
 
@@ -38,7 +38,7 @@ namespace GetResultsCI
 
         public static string GetTheLastResultsFolder()
         {
-            var parentDir = ConfigReader.GetTestResultsDir();
+            var parentDir = ConfigReader.TestResultsDir;
 
             Logger.Log.Info($"Scanning the subfolders of the '{parentDir}' folder");
 
@@ -47,7 +47,7 @@ namespace GetResultsCI
                 throw new DirectoryNotFoundException("Search directory doesn't exist.");
             }
 
-            var dateFormat = ConfigReader.GetDateTimeFormat();
+            var dateFormat = ConfigReader.DateTimeFormat;
 
             int searchRange = 10; // days from today for search, if the results folder for today is absent
 

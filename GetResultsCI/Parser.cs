@@ -9,9 +9,9 @@ namespace GetResultsCI
         static string excelFormula = null;
         // Delimiter depends on the report file extension (csv - "," tsv - "\t")
         static string del = ChooseDelimiter();
-
         // Temporary variable for groups dividing
-        static string temp = "";
+        public static string temp = "";
+
         public static string[] Parse(string[] parsedFile, int len)
         {
             try
@@ -52,7 +52,6 @@ namespace GetResultsCI
             Logger.Log.Info("Program started -----------------------------------------------------------------------");
 
             var parsedFiles = new List<string[]>();
-
             var files = FolderScanner.ScanFolder();
 
             foreach (var file in files)
@@ -72,10 +71,9 @@ namespace GetResultsCI
         public static void GetReportNameAndWriteTableHeader(List<string[]> parsedFiles, int length)
         {
             ReportWriter.ReportName = parsedFiles[0][length - 3];
-            ReportWriter.WriteToReportFile($"Summary{del}{del}Passed{del}{excelFormula}{del}%\n");
-
+            ReportWriter.WriteToReportFile($"CI summary:{del}{del}{excelFormula}\n\n");
             ReportWriter.WriteToReportFile($"QA_Client{del}CI Group{del}Test name{del}Build Version{del}Time{del}Passed{del}Failed{del}Skipped{del}Result{del}Errors\n");
-            Logger.Log.Info("Table header was successfully created.");
+            Logger.Log.Info("Table header with formulas was successfully created.");
             Logger.Log.Info("Test results recording started.");
         }
 
@@ -110,34 +108,16 @@ namespace GetResultsCI
             return match.ToString();
         }
 
-        public static void WriteWithSeparationByGroups(string[] textAndCIgroup)
-        {
-            var stringToWrite = textAndCIgroup[0];
-            var CIgroup = textAndCIgroup[1];
-
-            // If the group is not equal to pervious group (temp) - write blank space
-            if (!CIgroup.Equals(temp) && !temp.Equals(""))
-            {
-                ReportWriter.WriteToReportFile("\n");
-            }
-            ReportWriter.WriteToReportFile(stringToWrite);
-            temp = CIgroup;
-
-            Logger.Log.Debug("Test result was successfully recorded to the Report file:");
-            Logger.Log.Debug(stringToWrite);
-        }
-
         public static string ChooseDelimiter()
         {
-            switch (ConfigReader.GetReportFileExtension().ToLower())
+            switch (ConfigReader.ReportFileExtension)
             {
                 case "tsv":
-                    // This formula works only with tsv-files
-                    excelFormula = "=(COUNTIF(H3:H500,\"=PASSED\")/(COUNTIF(H3:H500,\"=FAILED\")+COUNTIF(H3:H500,\"=PASSED\"))*100)";
+                    excelFormula = ConfigReader.ExcelFormula; // This formula works only with tsv-files because of commas
                     return "\t";
 
                 default:
-                    excelFormula = "unknown";
+                    excelFormula = "";
                     return ",";
             }
         }

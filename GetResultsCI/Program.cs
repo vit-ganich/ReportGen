@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace GetResultsCI
 {
@@ -14,13 +15,17 @@ namespace GetResultsCI
 
                 Parser.GetReportNameAndWriteTableHeader(parsedFiles, len);
 
+                StringBuilder textToWrite = new StringBuilder();
+
                 foreach (var parsedFile in parsedFiles)
                 {
-                    var strToWrite = Parser.Parse(parsedFile, len);
-
-                    Parser.WriteWithSeparationByGroups(strToWrite);
+                    string[] strToWrite = Parser.Parse(parsedFile, len);
+                    textToWrite.Append(ReportWriter.WriteWithSeparationByGroups(strToWrite));
                 }
-                Logger.Log.Info($"All tasks were finished successfully, report file was created in {ConfigReader.GetReportFolder()} folder.");
+
+                ReportWriter.WriteToReportFile(textToWrite.ToString());
+
+                Logger.Log.Info($"All tasks were finished successfully, report file was created in {ConfigReader.ReportFolder} folder.");
 
                 Postman.EmailSend();
             }

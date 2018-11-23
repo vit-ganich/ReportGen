@@ -12,13 +12,13 @@ namespace GetResultsCI
             Logger.Log.Debug("SMTP email settings - checking data format.");
 
             #region Email settings
-            string server = ConfigReader.GetSmtpServerPort()[0];
-            int port = Convert.ToInt32(ConfigReader.GetSmtpServerPort()[1]);
-            bool isSslEnabled = ConfigReader.GetSslEnabled();
-            string userMail = ConfigReader.GetSmtpServerCredentials()[0];
-            string userPass = ConfigReader.GetSmtpServerCredentials()[1];
-            string mailTo = ConfigReader.GetSmtpMailTo();
-            string mailBody = ConfigReader.GetSmtpMailBody();
+            string server = ConfigReader.SmtpServerPort[0];
+            int port = Convert.ToInt32(ConfigReader.SmtpServerPort[1]);
+            bool isSslEnabled = ConfigReader.IsSslEnabled;
+            string userMail = ConfigReader.SmtpServerCredentials[0];
+            string userPass = ConfigReader.SmtpServerCredentials[1];
+            string mailTo = ConfigReader.SmtpMailTo;
+            string mailBody = ConfigReader.SmtpMailBody;
             #endregion
 
             Logger.Log.Debug("SMTP email settings have a correct data format.");
@@ -35,7 +35,7 @@ namespace GetResultsCI
             mail.Subject = $"CI summary {ReportWriter.ReportName}";
             mail.Body = mailBody;
 
-            var pathToAttachFile = Path.Combine(ReportWriter.ReportFolder, ReportWriter.ReportName + "." + ConfigReader.GetReportFileExtension());
+            var pathToAttachFile = Path.Combine(ReportWriter.ReportFolder, ReportWriter.ReportName + "." + ConfigReader.ReportFileExtension);
             var attachment = new Attachment(pathToAttachFile);
             mail.Attachments.Add(attachment);
             Logger.Log.Info("SMTP email attachment was created successfully.");

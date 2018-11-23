@@ -8,21 +8,33 @@ namespace GetResultsCI
         public static string ReportFolder { get; set; }
         public static string ReportName { get; set; }
 
+        public static string WriteWithSeparationByGroups(string[] textAndCIgroup)
+        {
+            var stringToWrite = textAndCIgroup[0];
+            var CIgroup = textAndCIgroup[1];
+
+            // If the group is not equal to pervious group (temp) - add blank space for better readability
+            if (!CIgroup.Equals(Parser.temp) && !Parser.temp.Equals("")) { stringToWrite = "\n" + stringToWrite; }
+
+            Parser.temp = CIgroup;
+
+            Logger.Log.Debug("Test result was successfully extracted");
+            Logger.Log.Debug(stringToWrite);
+
+            return stringToWrite;
+        }
+
         public static void WriteToReportFile(string message)
         {
             ReportFolder = CreateReportFolder();
 
-            var reportExtension = ConfigReader.GetReportFileExtension();
+            var reportExtension = ConfigReader.ReportFileExtension;
 
             var reportFile = string.Format($"{ReportName}.{reportExtension}");
 
             if (ReportFolder != null)
             {
-                using (StreamWriter file =
-                new StreamWriter(Path.Combine(ReportFolder, reportFile), true))
-                {
-                    file.Write(message);
-                }
+                File.WriteAllText(Path.Combine(ReportFolder, reportFile), message);
             }
             else
             {
@@ -35,7 +47,7 @@ namespace GetResultsCI
         {
             try
             {
-                reportFolder = ConfigReader.GetReportFolder();
+                reportFolder = ConfigReader.ReportFolder;
 
                 if (!Directory.Exists(reportFolder))
                 {
@@ -49,11 +61,6 @@ namespace GetResultsCI
                 throw;
             }
             return reportFolder;
-        }
-
-        public static string GetCurrentTime()
-        {
-            return DateTime.Now.ToString(ConfigReader.GetDateTimeFormat());
         }
     }
 }
